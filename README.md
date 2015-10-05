@@ -29,7 +29,9 @@ Installation
 ======================
 
 You can just clone repository into your XenForo installation using the following Git command:
-```git clone https://github.com/fhteam/xenforo-clean-dead-links.git library/FH/LinkCleaner```
+```
+git clone https://github.com/fhteam/xenforo-clean-dead-links.git library/FH/LinkCleaner
+```
 
 Architecture
 ======================
