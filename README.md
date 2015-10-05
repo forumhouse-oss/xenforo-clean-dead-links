@@ -77,3 +77,9 @@ An extensive logging is a must-have part of any project you develop. So, this ad
 `Monolog\Logger` around for use in almost any part of the addon.
 
 Each content change is diff`ed and diff result is also logged for future reference.
+
+Epilogue
+======================
+
+Let me repeat once more. This is not an end-user-ready addon. This is only a piece of code you may take and
+re-implement for your specific task.
