@@ -25,6 +25,11 @@ It could be done very easily. You can put `composer.json` to the root of your Xe
 
 Now you can use all features of libraries, supported by Composer in your XenForo project.
 
+Installation
+======================
+
+You can just clone repository into your XenForo installation using the following Git command:
+```git clone https://github.com/fhteam/xenforo-clean-dead-links.git library/FH/LinkCleaner```
 
 Architecture
 ======================
