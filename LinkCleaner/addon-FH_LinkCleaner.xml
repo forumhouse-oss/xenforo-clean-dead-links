@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="FH_LinkCleaner" title="[FH] Чистка форума от мертвых ссылок" version_string="1.0" version_id="0" url=""
+       install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+    <admin_navigation>
+        <navigation navigation_id="fhLinkCleaner" parent_navigation_id="applications" display_order="1"
+                    link="fh-link-cleaner" admin_permission_id="thread" debug_only="0" hide_no_children="0"/>
+    </admin_navigation>
+    <admin_permissions/>
+    <admin_style_properties/>
+    <admin_templates>
+        <template title="fh_lc_clean_file_result"><![CDATA[<ul>
+<xen:foreach loop="$output" value="$message">
+  <li>
+    {$name}
+  </li>
+</xen:foreach>
+</ul>]]></template>
+        <template title="fh_lc_clean_file_upload"><![CDATA[<xen:title>{xen:phrase fh_lc_clean_file_upload_title}</xen:title>
+
+<xen:form action="{xen:adminlink 'fh-link-cleaner/clean'}" upload="true">
+	<xen:uploadunit label="{xen:phrase fh_lc_select_file}:" name="dead_links_file" />
+	
+	<xen:submitunit save="{xen:phrase fh_lc_start_cleaning}" />
+	<input type="hidden" name="_xfConfirm" value="1" />
+</xen:form>]]></template>
+    </admin_templates>
+    <admin_template_modifications/>
+    <code_events/>
+    <code_event_listeners/>
+    <cron/>
+    <email_templates/>
+    <email_template_modifications/>
+    <optiongroups/>
+    <permissions>
+        <permission_groups/>
+        <permissions/>
+        <interface_groups/>
+    </permissions>
+    <phrases>
+        <phrase title="admin_navigation_fhLinkCleaner" version_id="0" version_string="1.0">
+            <![CDATA[Чистка мертвых ссылок]]></phrase>
+        <phrase title="fh_lc_clean_file_upload_title" version_id="0" version_string="1.0">
+            <![CDATA[Dead links cleaning using uploaded file]]></phrase>
+        <phrase title="fh_lc_select_file" version_id="0" version_string="1.0">
+            <![CDATA[Select a file with dead links information]]></phrase>
+        <phrase title="fh_lc_start_cleaning" version_id="0" version_string="1.0"><![CDATA[Start cleaning!]]></phrase>
+    </phrases>
+    <route_prefixes>
+        <route_type type="admin">
+            <prefix original_prefix="fh-link-cleaner" class="FH_LinkCleaner_Route_PrefixAdmin_CleanFile"
+                    build_link="all"/>
+        </route_type>
+    </route_prefixes>
+    <style_properties/>
+    <templates/>
+    <public_template_modifications/>
+    <bb_code_media_sites/>
+    <bb_codes/>
+</addon>
