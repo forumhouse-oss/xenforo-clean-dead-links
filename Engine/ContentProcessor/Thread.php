@@ -41,17 +41,24 @@ class FH_LinkCleaner_Engine_ContentProcessor_Thread extends FH_LinkCleaner_Engin
 
         $message = $cleaner->clean();
 
-        if ($message) {
-            $diff = $this->getPostMessageDiff($post, $message);
-
+        if (!$message) {
             $this->logger->addDebug(
-                "BBCode cleaned in thread {$post['thread_id']}, post {$post['post_id']}: \r\n $diff\r\n"
+                "No cleaning was required in thread {$post['thread_id']}, post {$post['post_id']}: \r\n"
             );
 
-            if (!$this->pretend) {
-                $this->saveMessageIntoPost($post, $message);
-            }
+            return;
         }
+
+        $diff = $this->getPostMessageDiff($post, $message);
+
+        $this->logger->addInfo(
+            "BBCode cleaned in thread {$post['thread_id']}, post {$post['post_id']}: \r\n $diff\r\n"
+        );
+
+        if (!$this->pretend) {
+            $this->saveMessageIntoPost($post, $message);
+        }
+
     }
 
     /**
@@ -69,7 +76,18 @@ class FH_LinkCleaner_Engine_ContentProcessor_Thread extends FH_LinkCleaner_Engin
         );
         $dw->setExistingData($post);
         $dw->set('message', $message);
-        $dw->save();
+
+        try {
+            $dw->save();
+        } catch (Exception $e) {
+            $errors = implode("\r\n", $dw->getErrors());
+            $this->logger->addError(
+                "Error saving post {$post['post_id']}. Message is: '$message'. Errors are: {$errors}"
+            );
+
+            return;
+        }
+
         $this->logger->debug("Saved post {$post['post_id']} into DB");
     }
 
