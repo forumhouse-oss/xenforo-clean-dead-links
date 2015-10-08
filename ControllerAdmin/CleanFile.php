@@ -13,7 +13,10 @@ class FH_LinkCleaner_ControllerAdmin_CleanFile extends XenForo_ControllerAdmin_A
     const TIME_LIMIT = 300;
 
     /** If true, no content will be modified */
-    const PRETEND_MODE = true;
+    const PRETEND_MODE = false;
+
+    /** If true, no last edit date will be changed in content */
+    const SILENT_MODE = true;
 
     /** Logging level for Monolog */
     const LOG_LEVEL = Logger::DEBUG;
@@ -72,7 +75,7 @@ class FH_LinkCleaner_ControllerAdmin_CleanFile extends XenForo_ControllerAdmin_A
 
         foreach ($linkCollections as $linkCollection) {
             $processorClass = $linkCollection->getContentProcessorClass();
-            $processor = $this->createContentProcessor($processorClass, $logger, self::PRETEND_MODE);
+            $processor = $this->createContentProcessor($processorClass, $logger, self::PRETEND_MODE, self::SILENT_MODE);
             $processor->clean($linkCollection->getItems());
         }
 
@@ -138,14 +141,15 @@ class FH_LinkCleaner_ControllerAdmin_CleanFile extends XenForo_ControllerAdmin_A
      * @param string $processorClass
      * @param Logger $logger
      * @param bool   $pretend
+     * @param bool   $silent
      *
      * @return FH_LinkCleaner_Engine_ContentProcessor_Abstract
      * @throws Exception
      */
-    private function createContentProcessor($processorClass, $logger, $pretend)
+    private function createContentProcessor($processorClass, $logger, $pretend, $silent)
     {
         /** @var FH_LinkCleaner_Engine_ContentProcessor_Abstract $processor */
-        $processor = new $processorClass($logger, $pretend);
+        $processor = new $processorClass($logger, $pretend, $silent);
         if (!($processor instanceof FH_LinkCleaner_Engine_ContentProcessor_Abstract)) {
             throw new Exception(
                 "Class '$processorClass' is not a descendant of FH_LinkCleaner_Engine_ContentProcessor_Abstract"

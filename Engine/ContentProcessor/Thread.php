@@ -76,6 +76,7 @@ class FH_LinkCleaner_Engine_ContentProcessor_Thread extends FH_LinkCleaner_Engin
         );
         $dw->setExistingData($post);
         $dw->set('message', $message);
+        $dw->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_UPDATE_EDIT_DATE, (int)(!$this->silent));
 
         try {
             $dw->save();

@@ -18,15 +18,22 @@ abstract class FH_LinkCleaner_Engine_ContentProcessor_Abstract
     protected $pretend;
 
     /**
+     * @var bool
+     */
+    protected $silent;
+
+    /**
      * FH_LinkCleaner_Engine_ContentProcessor_Abstract constructor.
      *
      * @param Logger $logger  Monolog instance to use for logging
      * @param bool   $pretend If true - only logging is performed. No modification done to forum
+     * @param bool   $silent  Silent edit mode for posts
      */
-    public function __construct(Logger $logger, $pretend)
+    public function __construct(Logger $logger, $pretend, $silent)
     {
         $this->logger = $logger;
         $this->pretend = $pretend;
+        $this->silent = $silent;
     }
 
     /**
