@@ -19,7 +19,7 @@ if (!class_exists('XenForo_Autoloader', false)) {
     XenForo_Application::initialize($xfRootDir.'/library', $xfRootDir, true);
 }
 
-define('CLEANER_LOG_LEVEL', Logger::DEBUG);
+define('CLEANER_LOG_LEVEL', Logger::INFO);
 define('CLEANER_PRETEND', false);
 define('CLEANER_SILENT', true);
 

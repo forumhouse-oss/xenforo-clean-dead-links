@@ -19,7 +19,7 @@ class FH_LinkCleaner_ControllerAdmin_CleanFile extends XenForo_ControllerAdmin_A
     const SILENT_MODE = true;
 
     /** Logging level for Monolog */
-    const LOG_LEVEL = Logger::DEBUG;
+    const LOG_LEVEL = Logger::INFO;
 
     /**
      * @var resource Resource to capture monolog messages for logging and displaying
