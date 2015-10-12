@@ -73,9 +73,17 @@ class FH_LinkCleaner_ControllerAdmin_CleanFile extends XenForo_ControllerAdmin_A
         $linkSorter = new FH_LinkCleaner_Engine_Sorter_LinkSorter($logger);
         $linkCollections = $linkSorter->sortLinks($fileEntries);
 
+        $cleaners = array('FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner');
+
         foreach ($linkCollections as $linkCollection) {
             $processorClass = $linkCollection->getContentProcessorClass();
-            $processor = $this->createContentProcessor($processorClass, $logger, self::PRETEND_MODE, self::SILENT_MODE);
+            $processor = $this->createContentProcessor(
+                $cleaners,
+                $processorClass,
+                $logger,
+                self::PRETEND_MODE,
+                self::SILENT_MODE
+            );
             $processor->clean($linkCollection->getItems());
         }
 
@@ -138,18 +146,19 @@ class FH_LinkCleaner_ControllerAdmin_CleanFile extends XenForo_ControllerAdmin_A
     }
 
     /**
-     * @param string $processorClass
-     * @param Logger $logger
-     * @param bool   $pretend
-     * @param bool   $silent
+     * @param string[] $cleaners
+     * @param string   $processorClass
+     * @param Logger   $logger
+     * @param bool     $pretend
+     * @param bool     $silent
      *
      * @return FH_LinkCleaner_Engine_ContentProcessor_Abstract
      * @throws Exception
      */
-    private function createContentProcessor($processorClass, $logger, $pretend, $silent)
+    private function createContentProcessor(array $cleaners, $processorClass, $logger, $pretend, $silent)
     {
         /** @var FH_LinkCleaner_Engine_ContentProcessor_Abstract $processor */
-        $processor = new $processorClass($logger, $pretend, $silent);
+        $processor = new $processorClass($cleaners, $logger, $pretend, $silent);
         if (!($processor instanceof FH_LinkCleaner_Engine_ContentProcessor_Abstract)) {
             throw new Exception(
                 "Class '$processorClass' is not a descendant of FH_LinkCleaner_Engine_ContentProcessor_Abstract"

@@ -26,19 +26,9 @@ define('CLEANER_SILENT', true);
 ini_set('auto_detect_line_endings', true); // MacOSX maybe fix
 ini_set('memory_limit', '256M');
 
-$logger = new Logger('logger');
+$logger = createLogger();
 
-$lineFormatter = new LineFormatter(null, null, true, true);
-
-$handler = new RotatingFileHandler(__DIR__.'/../messages.log', 5, CLEANER_LOG_LEVEL);
-$handler->setFormatter($lineFormatter);
-$logger->pushHandler($handler);
-
-$handler = new \Monolog\Handler\StreamHandler("php://stdout", CLEANER_LOG_LEVEL);
-$handler->setFormatter($lineFormatter);
-$logger->pushHandler($handler);
-
-$fileName = __DIR__."/to_process.csv";
+$fileName = __DIR__."/dead_links.csv";
 $fileHandle = fopen($fileName, 'r');
 if (!$fileHandle) {
     die("Cannot open file '$fileName");
@@ -49,16 +39,50 @@ $fileEntries = $csvReader->read();
 
 $linkSorter = new FH_LinkCleaner_Engine_Sorter_LinkSorter($logger);
 $linkCollections = $linkSorter->sortLinks($fileEntries);
+$cleaners = array('FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner');
 
 foreach ($linkCollections as $linkCollection) {
     $processorClass = $linkCollection->getContentProcessorClass();
-    /** @var FH_LinkCleaner_Engine_ContentProcessor_Abstract $processor */
-    $processor = new $processorClass($logger, CLEANER_PRETEND, CLEANER_SILENT);
+    $processor = createProcessor($processorClass, $cleaners, $logger);
+    $processor->clean($linkCollection->getItems());
+}
+
+/**
+ * @return Logger
+ */
+function createLogger()
+{
+    $logger = new Logger('logger');
+
+    $lineFormatter = new LineFormatter(null, null, true, true);
+
+    $handler = new RotatingFileHandler(__DIR__.'/../messages.log', 5, CLEANER_LOG_LEVEL);
+    $handler->setFormatter($lineFormatter);
+    $logger->pushHandler($handler);
+
+    $handler = new \Monolog\Handler\StreamHandler("php://stdout", CLEANER_LOG_LEVEL);
+    $handler->setFormatter($lineFormatter);
+    $logger->pushHandler($handler);
+
+    return $logger;
+}
+
+/**
+ * @param string   $processorClass
+ * @param string[] $cleaners
+ * @param Logger   $logger
+ *
+ * @return FH_LinkCleaner_Engine_ContentProcessor_Abstract
+ * @throws Exception
+ */
+function createProcessor($processorClass, $cleaners, $logger)
+{
+    $processor = new $processorClass($cleaners, $logger, CLEANER_PRETEND, CLEANER_SILENT);
     if (!($processor instanceof FH_LinkCleaner_Engine_ContentProcessor_Abstract)) {
         throw new Exception(
             "Class '$processorClass' is not a descendant of FH_LinkCleaner_Engine_ContentProcessor_Abstract"
         );
     }
 
-    $processor->clean($linkCollection->getItems());
+    return $processor;
 }
