@@ -29,17 +29,25 @@ class FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner extends FH_LinkCleaner_Eng
     const BB_CODE_EMPTY_TAGS_WITH_OPTION = '#\r?\n?\[(?:quote)=[^\]]+\]\s*\[/(?:quote)\]\r?\n?#ismu';
 
     /**
-     * @return string|null Cleaned content or null if no cleaning was required
+     * @param string $content
+     *
+     * @return string Cleaned content
      */
-    public function clean()
+    public function clean($content)
     {
-        $messageNew = $this->content;
-        $messageNew = preg_replace_callback(self::BB_CODE_URL_REGEX, array($this, 'cleanUrlTagContents'), $messageNew);
-        $messageNew = preg_replace_callback(self::BB_CODE_IMG_REGEX, array($this, 'cleanImgTagContents'), $messageNew);
-        $messageNew = preg_replace(self::BB_CODE_EMPTY_TAGS_SIMPLE, ' ', $messageNew);
-        $messageNew = preg_replace(self::BB_CODE_EMPTY_TAGS_WITH_OPTION, ' ', $messageNew);
+        $content = preg_replace_callback(self::BB_CODE_URL_REGEX, array($this, 'cleanUrlTagContents'), $content);
+        $this->assertIsNotRegExError($content, 'BB_CODE_URL_REGEX');
 
-        return ($this->content === $messageNew) ? null : $messageNew;
+        $content = preg_replace_callback(self::BB_CODE_IMG_REGEX, array($this, 'cleanImgTagContents'), $content);
+        $this->assertIsNotRegExError($content, 'BB_CODE_IMG_REGEX');
+
+        $content = preg_replace(self::BB_CODE_EMPTY_TAGS_SIMPLE, ' ', $content);
+        $this->assertIsNotRegExError($content, 'BB_CODE_EMPTY_TAGS_SIMPLE');
+
+        $content = preg_replace(self::BB_CODE_EMPTY_TAGS_WITH_OPTION, ' ', $content);
+        $this->assertIsNotRegExError($content, 'BB_CODE_EMPTY_TAGS_WITH_OPTION');
+
+        return $content;
     }
 
     /**
@@ -81,5 +89,18 @@ class FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner extends FH_LinkCleaner_Eng
         }
 
         return '';
+    }
+
+    /**
+     * @param string $content
+     * @param string $operationDescription
+     *
+     * @throws Exception
+     */
+    private function assertIsNotRegExError($content, $operationDescription)
+    {
+        if (null === $content) {
+            throw new Exception("Regular expression operation error at operation $operationDescription");
+        }
     }
 }
