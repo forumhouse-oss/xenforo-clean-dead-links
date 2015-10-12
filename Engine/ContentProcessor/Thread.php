@@ -1,23 +1,21 @@
 <?php
 
-use SebastianBergmann\Diff\Differ;
-
 /**
  * Class, responsible for processing threads
  */
 class FH_LinkCleaner_Engine_ContentProcessor_Thread extends FH_LinkCleaner_Engine_ContentProcessor_Abstract
 {
     /**
-     * @param FH_LinkCleaner_Engine_Sorter_CleanItem[] $links
+     * @param FH_LinkCleaner_Engine_Sorter_CleanItem[] $itemsToClean
      *
      * @return void
      */
-    public function clean(array $links)
+    public function clean(array $itemsToClean)
     {
         $db = XenForo_Application::getDb();
         $db->beginTransaction();
 
-        foreach ($links as $cleanItem) {
+        foreach ($itemsToClean as $cleanItem) {
             $posts = $this->getPostModel()->getPostsInThread($cleanItem->getId());
             foreach ($posts as $post) {
                 $this->processPost($post, $cleanItem);
@@ -29,19 +27,19 @@ class FH_LinkCleaner_Engine_ContentProcessor_Thread extends FH_LinkCleaner_Engin
 
     /**
      * @param array                                  $post
-     * @param FH_LinkCleaner_Engine_Sorter_CleanItem $cleanItem
+     * @param FH_LinkCleaner_Engine_Sorter_CleanItem $itemToClean
      */
-    private function processPost(array $post, FH_LinkCleaner_Engine_Sorter_CleanItem $cleanItem)
+    private function processPost(array $post, FH_LinkCleaner_Engine_Sorter_CleanItem $itemToClean)
     {
-        $cleaner = new FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner(
-            $this->logger,
-            $post['message'],
-            $cleanItem->getDeadLinks()
-        );
+        $oldMessage = $post['message'];
+        $message = $oldMessage;
 
-        $message = $cleaner->clean();
+        foreach ($this->cleanerClasses as $cleanerClass) {
+            $cleaner = $this->createCleaner($cleanerClass, $itemToClean->getDeadLinks());
+            $message = $cleaner->clean($message);
+        }
 
-        if (!$message) {
+        if ($oldMessage === $message) {
             $this->logger->addDebug(
                 "No cleaning was required in thread {$post['thread_id']}, post {$post['post_id']}: \r\n"
             );
@@ -49,7 +47,7 @@ class FH_LinkCleaner_Engine_ContentProcessor_Thread extends FH_LinkCleaner_Engin
             return;
         }
 
-        $diff = $this->getPostMessageDiff($post, $message);
+        $diff = $this->getMessageDiff($oldMessage, $message);
 
         $this->logger->addInfo(
             "BBCode cleaned in thread {$post['thread_id']}, post {$post['post_id']}: \r\n $diff\r\n"
@@ -74,6 +72,7 @@ class FH_LinkCleaner_Engine_ContentProcessor_Thread extends FH_LinkCleaner_Engin
             'XenForo_DataWriter_DiscussionMessage_Post',
             XenForo_DataWriter::ERROR_EXCEPTION
         );
+
         $dw->setExistingData($post);
         $dw->set('message', $message);
         $dw->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_UPDATE_EDIT_DATE, (int)(!$this->silent));
@@ -99,19 +98,5 @@ class FH_LinkCleaner_Engine_ContentProcessor_Thread extends FH_LinkCleaner_Engin
     private function getPostModel()
     {
         return XenForo_Model::create('XenForo_Model_Post');
-    }
-
-    /**
-     * @param array $post
-     * @param       $message
-     *
-     * @return string
-     */
-    private function getPostMessageDiff(array $post, $message)
-    {
-        $differ = new Differ('');
-        $diff = $differ->diff($post['message']."\r\n", $message);
-
-        return $diff;
     }
 }
