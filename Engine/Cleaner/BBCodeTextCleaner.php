@@ -11,7 +11,7 @@ class FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner extends FH_LinkCleaner_Eng
      *   - [url=http://example.com]Link text[/url]
      *   - [url]http://www.example.com[/url]
      */
-    const BB_CODE_URL_REGEX = '#\[url(?:="?(.+?)?)?"?\](.+?)\[/url\]#ismu';
+    const BB_CODE_URL_REGEX = '#\[url(?:=["\']?(.+?)?)?["\']?\](.+?)\[/url\]#ismu';
 
     /**
      * RegEx to parse [IMG]http://www.example.com/image.jpg[/IMG] bbcodes
