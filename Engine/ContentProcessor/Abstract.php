@@ -81,4 +81,21 @@ abstract class FH_LinkCleaner_Engine_ContentProcessor_Abstract
 
         return $diff;
     }
+
+    /**
+     * @param string   $message
+     * @param string[] $deadLinks
+     *
+     * @return string
+     * @throws Exception
+     */
+    protected function runCleaners($message, array $deadLinks)
+    {
+        foreach ($this->cleanerClasses as $cleanerClass) {
+            $cleaner = $this->createCleaner($cleanerClass, $deadLinks);
+            $message = $cleaner->clean($message);
+        }
+
+        return $message;
+    }
 }
