@@ -73,7 +73,7 @@ class FH_LinkCleaner_ControllerAdmin_CleanFile extends XenForo_ControllerAdmin_A
         $linkSorter = new FH_LinkCleaner_Engine_Sorter_LinkSorter($logger);
         $linkCollections = $linkSorter->sortLinks($fileEntries);
 
-        $cleaners = array(new FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner($logger));
+        $cleaners = array(new FH_LinkCleaner_Engine_Cleaner_BBCodeText($logger));
 
         foreach ($linkCollections as $linkCollection) {
             $processorClass = $linkCollection->getContentProcessorClass();

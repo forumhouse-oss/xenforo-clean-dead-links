@@ -42,7 +42,7 @@ class FH_LinkCleaner_Engine_ContentProcessor_Post extends FH_LinkCleaner_Engine_
         $diff = $this->getMessageDiff($oldMessage, $message);
 
         $this->logger->addInfo(
-            "BBCode cleaned in thread {$post['thread_id']}, post {$post['post_id']}: \r\n $diff\r\n"
+            "Cleaning done in thread {$post['thread_id']}, post {$post['post_id']}: \r\n $diff\r\n"
         );
 
         if (!$this->pretend) {

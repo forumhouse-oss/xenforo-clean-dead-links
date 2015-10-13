@@ -19,10 +19,16 @@ class FH_LinkCleaner_Engine_Sorter_CleanItem
      * FH_LinkCleaner_Engine_Cleaner_CleanData constructor.
      *
      * @param int $id The id of the item (thread, blog, album etc) which we want to clean
+     *
+     * @throws Exception
      */
     public function __construct($id)
     {
+        if (!is_numeric($id)) {
+            throw new Exception("Passed id is not numeric: '$id'");
+        }
         $this->id = $id;
+        $this->deadLinks = array();
     }
 
     /**
