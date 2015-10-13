@@ -39,7 +39,7 @@ $fileEntries = $csvReader->read();
 
 $linkSorter = new FH_LinkCleaner_Engine_Sorter_LinkSorter($logger);
 $linkCollections = $linkSorter->sortLinks($fileEntries);
-$cleaners = array(new FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner($logger));
+$cleaners = array(new FH_LinkCleaner_Engine_Cleaner_BBCodeText($logger));
 
 foreach ($linkCollections as $linkCollection) {
     $processorClass = $linkCollection->getContentProcessorClass();
@@ -56,7 +56,8 @@ function createLogger()
 
     $lineFormatter = new LineFormatter(null, null, true, true);
 
-    $handler = new RotatingFileHandler(__DIR__.'/../messages.log', 5, CLEANER_LOG_LEVEL);
+    $filename = basename(__FILE__, '.php');
+    $handler = new RotatingFileHandler(__DIR__."/../{$filename}.log", 5, CLEANER_LOG_LEVEL);
     $handler->setFormatter($lineFormatter);
     $logger->pushHandler($handler);
 
