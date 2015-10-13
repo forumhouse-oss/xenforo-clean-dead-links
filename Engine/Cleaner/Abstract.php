@@ -13,27 +13,20 @@ abstract class FH_LinkCleaner_Engine_Cleaner_Abstract
     protected $logger;
 
     /**
-     * @var string[] Dead links to be cleaned out
-     */
-    protected $links;
-
-    /**
      * FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner constructor.
      *
-     * @param Logger   $logger  Monolog instance to use for logging
-     * @param string   $content Text content to clean
-     * @param string[] $links   Dead links to be cleaned out
+     * @param Logger $logger Monolog instance to use for logging
      */
-    public function __construct(Logger $logger, array $links)
+    public function __construct(Logger $logger)
     {
         $this->logger = $logger;
-        $this->links = $links;
     }
 
     /**
-     * @param string $content
+     * @param string   $content
+     * @param string[] $deadLinks
      *
      * @return string Cleaned content
      */
-    abstract public function clean($content);
+    abstract public function clean($content, array $deadLinks);
 }

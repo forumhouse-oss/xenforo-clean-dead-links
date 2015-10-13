@@ -39,7 +39,7 @@ $fileEntries = $csvReader->read();
 
 $linkSorter = new FH_LinkCleaner_Engine_Sorter_LinkSorter($logger);
 $linkCollections = $linkSorter->sortLinks($fileEntries);
-$cleaners = array('FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner');
+$cleaners = array(new FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner($logger));
 
 foreach ($linkCollections as $linkCollection) {
     $processorClass = $linkCollection->getContentProcessorClass();
