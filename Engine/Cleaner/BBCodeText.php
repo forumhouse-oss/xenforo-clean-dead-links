@@ -3,7 +3,7 @@
 /**
  * Class, that performs cleaning of BBCode-encoded links in the text
  */
-class FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner extends FH_LinkCleaner_Engine_Cleaner_Abstract
+class FH_LinkCleaner_Engine_Cleaner_BBCodeText extends FH_LinkCleaner_Engine_Cleaner_Abstract
 {
     /**
      * RegEx to find and parse links of the following format:
@@ -28,13 +28,19 @@ class FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner extends FH_LinkCleaner_Eng
      */
     const BB_CODE_EMPTY_TAGS_WITH_OPTION = '#\r?\n?\[(?:quote)=[^\]]+\]\s*\[/(?:quote)\]\r?\n?#ismu';
 
+    private $links;
+
     /**
-     * @param string $content
+     * @param string   $content
+     * @param string[] $deadLinks
      *
      * @return string Cleaned content
+     * @throws Exception
      */
-    public function clean($content)
+    public function clean($content, array $deadLinks)
     {
+        $this->links = $deadLinks;
+
         $content = preg_replace_callback(self::BB_CODE_URL_REGEX, array($this, 'cleanUrlTagContents'), $content);
         $this->assertIsNotRegExError($content, 'BB_CODE_URL_REGEX');
 
@@ -89,18 +95,5 @@ class FH_LinkCleaner_Engine_Cleaner_BBCodeTextCleaner extends FH_LinkCleaner_Eng
         }
 
         return '';
-    }
-
-    /**
-     * @param string $content
-     * @param string $operationDescription
-     *
-     * @throws Exception
-     */
-    private function assertIsNotRegExError($content, $operationDescription)
-    {
-        if (null === $content) {
-            throw new Exception("Regular expression operation error at operation $operationDescription");
-        }
     }
 }

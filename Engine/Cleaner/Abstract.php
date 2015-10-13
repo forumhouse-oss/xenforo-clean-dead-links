@@ -29,4 +29,19 @@ abstract class FH_LinkCleaner_Engine_Cleaner_Abstract
      * @return string Cleaned content
      */
     abstract public function clean($content, array $deadLinks);
+
+    /**
+     * @param string $content
+     * @param string $operationDescription
+
+
+*
+*@throws Exception
+     */
+    protected function assertIsNotRegExError($content, $operationDescription)
+    {
+        if (null === $content) {
+            throw new Exception("Regular expression operation error at operation $operationDescription");
+        }
+    }
 }
