@@ -89,7 +89,7 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
 
         $path = $linkObj->getPath()
             .($hasQuery ? '?'.$linkObj->getQuery() : '')
-            .($hasFragment ? '?'.$linkObj->getFragment() : '');
+            .($hasFragment ? '#'.$linkObj->getFragment() : '');
 
         $urlMap = $this->getUrlRegexForPath($urlRegExes, $path);
 
