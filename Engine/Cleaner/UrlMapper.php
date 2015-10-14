@@ -73,11 +73,13 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
         }
 
         $host = $linkObj->getHost();
-        $urlRegExes = $this->getUrlRegExesForHost($host);
+        $matchingHost = $this->findMatchingHostRegEx($host);
 
-        if (null === $urlRegExes) {
+        if (null === $matchingHost) {
             return $originalContents; // Not our domain
         }
+
+        $urlRegExes = $this->urlMap[$matchingHost]['links'];
 
         $hasPath = strlen($linkObj->getPath()) > 0;
         $hasQuery = strlen($linkObj->getQuery()) > 0;
@@ -99,7 +101,7 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
 
         list($regEx, $replaceBy) = $urlMap;
 
-        if ($this->urlMap[$host]['force_https']) {
+        if ($this->urlMap[$matchingHost]['force_https']) {
             $url = str_replace('http://', 'https://', $url);
         }
 
@@ -114,36 +116,11 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
     }
 
     /**
-     * @param string $host
-     *
-     * @return null|string[]
-     */
-    private function getUrlRegExesForHost($host)
-    {
-        $linksToReplace = null;
-        foreach ($this->hostRegExes as $hostRegEx) {
-
-            try {
-                if (!preg_match($hostRegEx, $host)) {
-                    continue;
-                }
-            } catch (Exception $e) {
-                $this->logger->addError("Regular expression '$hostRegEx' is invalid");
-                throw $e;
-            }
-
-            $linksToReplace = $this->urlMap[$hostRegEx]['links'];
-            break;
-        }
-
-        return $linksToReplace;
-    }
-
-    /**
      * @param string[] $urlRegExes
      * @param string   $path
      *
      * @return null|string[]
+     * @throws Exception
      */
     private function getUrlRegexForPath($urlRegExes, $path)
     {
@@ -183,5 +160,31 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
     private function createFullLinkBbCode($url, $body)
     {
         return "[url=\"$url\"]{$body}[/url]";
+    }
+
+    /**
+     * @param string $host
+     *
+     * @return null|string
+     * @throws Exception
+     */
+    private function findMatchingHostRegEx($host)
+    {
+        $matchingHostRegEx = null;
+        foreach ($this->hostRegExes as $hostRegEx) {
+            try {
+                if (!preg_match($hostRegEx, $host)) {
+                    continue;
+                }
+            } catch (Exception $e) {
+                $this->logger->addError("Regular expression '$hostRegEx' is invalid");
+                throw $e;
+            }
+
+            $matchingHostRegEx = $hostRegEx;
+            break;
+        }
+
+        return $matchingHostRegEx;
     }
 }
