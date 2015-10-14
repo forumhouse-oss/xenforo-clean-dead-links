@@ -122,8 +122,14 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
     {
         $linksToReplace = null;
         foreach ($this->hostRegExes as $hostRegEx) {
-            if (!preg_match($hostRegEx, $host)) {
-                continue;
+
+            try {
+                if (!preg_match($hostRegEx, $host)) {
+                    continue;
+                }
+            } catch (Exception $e) {
+                $this->logger->addError("Regular expression '$hostRegEx' is invalid");
+                throw $e;
             }
 
             $linksToReplace = $this->urlMap[$hostRegEx]['links'];
@@ -143,8 +149,13 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
     {
         $result = null;
         foreach ($urlRegExes as $regEx => $replaceBy) {
-            if (!preg_match($regEx, $path)) {
-                continue;
+            try {
+                if (!preg_match($regEx, $path)) {
+                    continue;
+                }
+            } catch (Exception $e) {
+                $this->logger->addError("Regular expression '$regEx' is invalid");
+                throw $e;
             }
             $result = array($regEx, $replaceBy);
             break;
