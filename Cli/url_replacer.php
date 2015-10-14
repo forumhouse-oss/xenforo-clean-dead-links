@@ -95,6 +95,7 @@ $processor->clean($itemsToClean);
 function createLogger()
 {
     $logger = new Logger('logger');
+    $logger->setTimezone(new DateTimeZone('Europe/Moscow'));
 
     $lineFormatter = new LineFormatter(null, null, true, true);
 
