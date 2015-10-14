@@ -47,6 +47,7 @@ $urlMap = array(
             '|stock/orders/(\d+)/add-offer([/?#].*)?|ismu' => 'exchange/orders/$1',
             '|stock/offers[/?].*user_id=(\d+)(.*)?|ismu' => 'exchange/contractors/$1',
             '|stock/contractors/account([/?#].*)?|ismu' => 'exchange/profile',
+            '|stock/contractors/(\d+)([/?#].*)?|ismu' => 'exchange/contractors/$1',
             '|stock/orders/categories([/?#].*)?|ismu' => 'exchange',
             '|stock/contractors/map([/?#].*)?|ismu' => 'exchange/contractors',
             '|stock/orders/watched([/?#].*)?|ismu' => 'exchange/profile/my-orders/new-for-client',
