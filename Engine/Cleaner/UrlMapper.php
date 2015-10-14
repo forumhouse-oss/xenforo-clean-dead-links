@@ -99,13 +99,17 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
 
         list($regEx, $replaceBy) = $urlMap;
 
+        if ($this->urlMap[$host]['force_https']) {
+            $url = str_replace('http://', 'https://', $url);
+        }
+
         if ($isSimpleLink) {
-            return $this->createSimpleLink(preg_replace($regEx, $replaceBy, $url));
+            return $this->createSimpleLinkBbCode(preg_replace($regEx, $replaceBy, $url));
         } else {
             $url = preg_replace($regEx, $replaceBy, $url);
             $body = preg_replace($regEx, $replaceBy, $body);
 
-            return $this->createFullLink($url, $body);
+            return $this->createFullLinkBbCode($url, $body);
         }
     }
 
@@ -122,7 +126,7 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
                 continue;
             }
 
-            $linksToReplace = $this->urlMap[$hostRegEx];
+            $linksToReplace = $this->urlMap[$hostRegEx]['links'];
             break;
         }
 
@@ -154,7 +158,7 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
      *
      * @return string
      */
-    private function createSimpleLink($url)
+    private function createSimpleLinkBbCode($url)
     {
         return "[url]{$url}[/url]";
     }
@@ -165,7 +169,7 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
      *
      * @return string
      */
-    private function createFullLink($url, $body)
+    private function createFullLinkBbCode($url, $body)
     {
         return "[url=\"$url\"]{$body}[/url]";
     }
