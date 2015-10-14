@@ -129,6 +129,7 @@ class FH_LinkCleaner_ControllerAdmin_CleanFile extends XenForo_ControllerAdmin_A
     private function createLogger()
     {
         $logger = new Logger('logger');
+        $logger->setTimezone(new DateTimeZone('Europe/Moscow'));
 
         $lineFormatter = new LineFormatter(null, null, true, true);
 
