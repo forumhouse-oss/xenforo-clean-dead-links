@@ -20,7 +20,7 @@ if (!class_exists('XenForo_Autoloader', false)) {
 }
 
 define('CLEANER_LOG_LEVEL', Logger::INFO);
-define('CLEANER_PRETEND', true);
+define('CLEANER_PRETEND', false);
 define('CLEANER_SILENT', true);
 
 ini_set('auto_detect_line_endings', true); // MacOSX maybe fix
@@ -34,32 +34,35 @@ $logger = createLogger();
 
 $urlMap = array(
     '|.+\.forumhouse\.ru$|ismu' => array(
-        '|stock/contractors/categories/(\d+)([/?#].*)?|ismu' => 'exchange/contractors?categoriesSelected[]=$1',
-        '|stock/portfolios/categories/(\d+)([/?#].*)?|ismu' => 'exchange/portfolios?categoriesSelected[]=$1',
-        '|stock/contractors/(\d+)/portfolio([/?#].*)?|ismu' => 'exchange/contractors/$1',
-        '|stock/contractors/(\d+)/services([/?#].*)?|ismu' => 'exchange/contractors/$1',
-        '|stock/contractors/account-select([/?#].*)?|ismu' => 'exchange/profile',
-        '|stock/contractors/(\d+)/reviews([/?#].*)?|ismu' => 'exchange/contractors/$1',
-        '|stock/reviews/categories/(\d+)([/?#].*)?|ismu' => 'exchange/feedbacks?categoriesSelected[]=$1',
-        '|stock/contractors/preferences([/?#].*)?|ismu' => 'exchange/profile',
-        '|stock/orders/categories/(\d+)([/?#].*)?|ismu' => 'exchange?categoriesSelected[]=$1',
-        '|stock/orders/(\d+)/add-offer([/?#].*)?|ismu' => 'exchange/orders/$1',
-        '|stock/offers[/?].*user_id=(\d+)(.*)?|ismu' => 'exchange/contractors/$1',
-        '|stock/contractors/account([/?#].*)?|ismu' => 'exchange/profile',
-        '|stock/orders/categories([/?#].*)?|ismu' => 'exchange',
-        '|stock/contractors/map([/?#].*)?|ismu' => 'exchange/contractors',
-        '|stock/orders/watched([/?#].*)?|ismu' => 'exchange/profile/my-orders/new-for-client',
-        '|stock[/?].*user_id=(\d+)(.*)?|ismu' => 'exchange/contractors/$1',
-        '|stock/orders/(\d+)([/?#].*)?|ismu' => 'exchange/orders/$1',
-        '|stock/contractors([/?#].*)?|ismu' => 'exchange/contractors',
-        '|stock/rates/(\d+)([/?#].*)?|ismu' => 'exchange',
-        '|stock/portfolios([/?#].*)?|ismu' => 'exchange/portfolios',
-        '|stock/orders/add([/?#].*)?|ismu' => 'exchange/orders/create',
-        '|stock/orders/my([/?#].*)?|ismu' => 'exchange/profile/my-orders/new-for-client',
-        '|stock/reviews([/?#].*)?|ismu' => 'exchange/feedbacks',
-        '|stock/offers([/?#].*)?|ismu' => 'exchange',
-        '|stock/orders([/?#].*)?|ismu' => 'exchange',
-        '|stock([/?#].*)?|ismu' => 'exchange',
+        'links' => array(
+            '|stock/contractors/categories/(\d+)([/?#].*)?|ismu' => 'exchange/contractors?categoriesSelected[]=$1',
+            '|stock/portfolios/categories/(\d+)([/?#].*)?|ismu' => 'exchange/portfolios?categoriesSelected[]=$1',
+            '|stock/contractors/(\d+)/portfolio([/?#].*)?|ismu' => 'exchange/contractors/$1',
+            '|stock/contractors/(\d+)/services([/?#].*)?|ismu' => 'exchange/contractors/$1',
+            '|stock/contractors/account-select([/?#].*)?|ismu' => 'exchange/profile',
+            '|stock/contractors/(\d+)/reviews([/?#].*)?|ismu' => 'exchange/contractors/$1',
+            '|stock/reviews/categories/(\d+)([/?#].*)?|ismu' => 'exchange/feedbacks?categoriesSelected[]=$1',
+            '|stock/contractors/preferences([/?#].*)?|ismu' => 'exchange/profile',
+            '|stock/orders/categories/(\d+)([/?#].*)?|ismu' => 'exchange?categoriesSelected[]=$1',
+            '|stock/orders/(\d+)/add-offer([/?#].*)?|ismu' => 'exchange/orders/$1',
+            '|stock/offers[/?].*user_id=(\d+)(.*)?|ismu' => 'exchange/contractors/$1',
+            '|stock/contractors/account([/?#].*)?|ismu' => 'exchange/profile',
+            '|stock/orders/categories([/?#].*)?|ismu' => 'exchange',
+            '|stock/contractors/map([/?#].*)?|ismu' => 'exchange/contractors',
+            '|stock/orders/watched([/?#].*)?|ismu' => 'exchange/profile/my-orders/new-for-client',
+            '|stock[/?].*user_id=(\d+)(.*)?|ismu' => 'exchange/contractors/$1',
+            '|stock/orders/(\d+)([/?#].*)?|ismu' => 'exchange/orders/$1',
+            '|stock/contractors([/?#].*)?|ismu' => 'exchange/contractors',
+            '|stock/rates/(\d+)([/?#].*)?|ismu' => 'exchange',
+            '|stock/portfolios([/?#].*)?|ismu' => 'exchange/portfolios',
+            '|stock/orders/add([/?#].*)?|ismu' => 'exchange/orders/create',
+            '|stock/orders/my([/?#].*)?|ismu' => 'exchange/profile/my-orders/new-for-client',
+            '|stock/reviews([/?#].*)?|ismu' => 'exchange/feedbacks',
+            '|stock/offers([/?#].*)?|ismu' => 'exchange',
+            '|stock/orders([/?#].*)?|ismu' => 'exchange',
+            '|stock([/?#].*)?|ismu' => 'exchange',
+        ),
+        'force_https' => true,
     ),
 );
 
