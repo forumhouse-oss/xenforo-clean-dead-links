@@ -105,10 +105,11 @@ class FH_LinkCleaner_Engine_Cleaner_UrlMapper extends FH_LinkCleaner_Engine_Clea
             $url = str_replace('http://', 'https://', $url);
         }
 
+        $url = is_callable($replaceBy) ? $replaceBy($url, $regEx) : preg_replace($regEx, $replaceBy, $url);
+
         if ($isSimpleLink) {
-            return $this->createSimpleLinkBbCode(preg_replace($regEx, $replaceBy, $url));
+            return $this->createSimpleLinkBbCode($url);
         } else {
-            $url = preg_replace($regEx, $replaceBy, $url);
             $body = preg_replace($regEx, $replaceBy, $body);
 
             return $this->createFullLinkBbCode($url, $body);
